@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a0f">
+  <meta name="description" content="ALPHA TERMINAL is a paper-trading simulator powered by real public market data and virtual funds.">
+  <title>ALPHA TERMINAL · Trading Simulator</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div id="authGate" class="auth-gate">
+    <header class="public-topbar">
+      <a class="brand" href="/" aria-label="Alpha Terminal home"><span class="brand-mark">α</span><span>ALPHA<span class="brand-muted">TERMINAL</span></span></a>
+      <div class="public-badge"><span class="pulse-dot"></span> PAPER TRADING · VIRTUAL FUNDS</div>
+    </header>
+    <main class="auth-layout">
+      <section class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> YOUR MARKET. YOUR MODEL.</div>
+        <h1>Think in<br><span class="title-accent">probabilities.</span><br>Trade in practice.</h1>
+        <p class="hero-subtitle">A market simulator for curious minds. Explore live crypto prices, test decisions, and understand your portfolio without putting real money at risk.</p>
+        <div class="hero-proof-row">
+          <div class="proof-item"><span class="proof-icon">↗</span><div><strong>Real market data</strong><small>Provider and freshness shown</small></div></div>
+          <div class="proof-item"><span class="proof-icon">◈</span><div><strong>Virtual capital</strong><small>Every balance is simulated</small></div></div>
+        </div>
+        <div class="hero-market-preview" id="publicMarketPreview">
+          <div class="preview-label">MARKET PULSE <span class="live-tag"><i></i> CONNECTING</span></div>
+          <div class="preview-assets"><div><span class="coin-icon coin-btc">₿</span><span>Bitcoin <small>BTC / USDT</small></span><b class="mono">—</b></div><div><span class="coin-icon coin-eth">◆</span><span>Ethereum <small>ETH / USDT</small></span><b class="mono">—</b></div><div><span class="coin-icon coin-sol">◎</span><span>Solana <small>SOL / USDT</small></span><b class="mono">—</b></div></div>
+          <p class="tiny-note">Prices appear only after a successful market-data connection. No invented quotes.</p>
+        </div>
+      </section>
+      <section class="auth-card glass-panel">
+        <div class="auth-card-top"><div><p class="eyebrow">WELCOME TO ALPHA</p><h2 id="authTitle">Sign in to your desk</h2></div><div class="secure-icon">⌑</div></div>
+        <p id="authDescription" class="muted">Pick up where your last market session ended.</p>
+        <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-mode="login">Sign in</button><button type="button" class="auth-tab" data-auth-mode="register">Create account</button></div>
+        <form id="loginForm" class="auth-form">
+          <label>Email or username<input name="email" autocomplete="username" required placeholder="you@example.com"></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label>
+          <button class="button button-primary full-width" type="submit">Enter terminal <span>↗</span></button>
+          <p class="form-message" id="loginMessage" aria-live="polite"></p>
+        </form>
+        <form id="registerForm" class="auth-form hidden">
+          <label>Username<input name="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_-]{3,20}" placeholder="market_student"></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+          <label>Password<input name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128" placeholder="Create a password"></label>
+          <div class="capital-picker"><div class="label-row"><span>Starting virtual capital</span><strong id="capitalLabel">$10,000</strong></div><div class="capital-presets"><button type="button" data-capital="100">$100</button><button type="button" data-capital="500">$500</button><button type="button" data-capital="1000">$1k</button><button type="button" data-capital="5000">$5k</button><button type="button" data-capital="10000" class="selected">$10k</button><button type="button" data-capital="25000">$25k</button><button type="button" data-capital="50000">$50k</button><button type="button" data-capital="100000">$100k</button><button type="button" data-capital="1000000">$1M</button></div><input type="hidden" name="startingCapital" value="10000"><label class="custom-capital">Custom amount (USD)<input id="customCapital" type="number" min="100" max="1000000" step="1" placeholder="100–1,000,000"></label></div>
+          <button class="button button-primary full-width" type="submit">Create virtual account <span>↗</span></button>
+          <p class="form-message" id="registerMessage" aria-live="polite"></p>
+        </form>
+        <div class="auth-footnote"><span class="lock-dot">⌑</span> No broker connection. No real orders. Ever.</div>
+      </section>
+    </main>
+    <footer class="public-footer"><span>ALPHA TERMINAL <span class="muted">/ SIMULATION ENVIRONMENT</span></span><span>Made for learning, not investment advice.</span></footer>
+  </div>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand side-brand" href="#dashboard"><span class="brand-mark">α</span><span>ALPHA<span class="brand-muted">TERMINAL</span></span></a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button data-view="dashboard" class="nav-item active"><span class="nav-icon">◫</span> Overview</button>
+        <button data-view="markets" class="nav-item"><span class="nav-icon">⌁</span> Markets</button>
+        <button data-view="terminal" class="nav-item"><span class="nav-icon">◩</span> Trading terminal <span class="nav-new">LIVE</span></button>
+        <button data-view="portfolio" class="nav-item"><span class="nav-icon">◰</span> Portfolio</button>
+        <button data-view="orders" class="nav-item"><span class="nav-icon">☷</span> Orders <span id="openOrderCount" class="nav-count">0</span></button>
+        <button data-view="history" class="nav-item"><span class="nav-icon">⌕</span> Trade history</button>
+        <button data-view="leaderboard" class="nav-item"><span class="nav-icon">♜</span> Leaderboard</button>
+      </nav>
+      <div class="sidebar-divider"></div>
+      <div class="workspace-label">PERSONAL</div>
+      <nav class="side-nav"><button data-view="settings" class="nav-item"><span class="nav-icon">⚙</span> Settings</button></nav>
+      <div class="sidebar-spacer"></div>
+      <div class="account-summary"><div class="mini-avatar" id="sidebarAvatar">A</div><div class="account-summary-text"><strong id="sidebarUsername">Trader</strong><small>Paper account · USD</small></div><button class="more-button" id="logoutButton" title="Log out" aria-label="Log out">↪</button></div>
+      <div class="sidebar-data"><span id="sidebarDataDot" class="status-dot"></span><span id="sidebarDataText">Connecting to market data</span></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="topbarTitle">Overview</strong></div>
+        <div class="topbar-actions"><div class="global-search"><span>⌕</span><input id="globalSearch" placeholder="Search markets…" aria-label="Search markets"><kbd>↵</kbd></div><button class="icon-button notification-button" id="notificationsButton" title="Notifications">♧<i id="notificationDot" class="notification-dot hidden"></i></button><button class="profile-chip" id="profileChip"><span class="mini-avatar small" id="topAvatar">A</span><span id="topUsername">Trader</span><span class="chevron">⌄</span></button></div>
+      </header>
+      <div id="notificationPanel" class="notification-panel hidden"></div>
+      <section id="pageContent" class="page-content" aria-live="polite"><div class="loading-state"><span class="loader"></span> Preparing your trading desk…</div></section>
+      <footer class="app-footer"><span><i class="status-dot" id="footerDataDot"></i> <b id="footerDataStatus">Market data connecting</b> <span id="footerDataAge">· no quote received yet</span></span><span>SIMULATED ACCOUNT · <span id="footerClock">--:--:-- UTC</span></span></footer>
+    </main>
+  </div>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+</body>
+</html>
